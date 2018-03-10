@@ -10,8 +10,12 @@ class Deck
     @new_deck ||= generate_deck
   end
 
-  def get_cards(number = 1)
-    @new_deck.slice!(0,number)
+  def get_cards
+    @new_deck.slice!(0, 2)
+  end
+
+  def add_card
+    @new_deck.slice!(1)
   end
 
   private
