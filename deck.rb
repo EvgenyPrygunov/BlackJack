@@ -7,8 +7,14 @@ class Deck
   attr_reader :new_deck
 
   def initialize
-    @new_deck = generate_deck
+    @new_deck ||= generate_deck
   end
+
+  def get_cards(number = 1)
+    @new_deck.slice!(0,number)
+  end
+
+  private
 
   def generate_deck
     deck = []
