@@ -1,9 +1,7 @@
-#dealer
 class Dealer
-  attr_accessor :cards, :bank
+  attr_accessor :cards
 
   def initialize
     @cards = 0
-    @bank = 0
   end
 end
