@@ -73,7 +73,7 @@ class Logic
   end
 
   def end_game_check
-    face_up if full?(@player) && full?(@dealer)
+    face_up if @deck.full?(@player) && @deck.full?(@dealer)
   end
 
   def bank_check
@@ -84,23 +84,5 @@ class Logic
       puts "Player #{@player.name} has won the whole game!"
       new_game
     end
-  end
-
-  def full?(person)
-    true if person.cards.length == 3
-  end
-
-  def summary(person)
-    sum = 0
-    person.cards.each do |card|
-      if card[1] == 'Ace' && sum < 11
-        sum += card[2][1]
-      elsif card[1] == 'Ace' && sum >= 11
-        sum += card[2][0]
-      else
-        sum += card[2]
-      end
-    end
-    sum
   end
 end

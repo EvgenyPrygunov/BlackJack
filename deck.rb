@@ -17,6 +17,24 @@ class Deck
     @new_deck.slice!(1)
   end
 
+  def full?(person)
+    true if person.cards.length == 3
+  end
+
+  def sum(person)
+    summary = 0
+    person.cards.each do |card|
+      if card[1] == 'Ace' && summary < 11
+        summary += card[2][1]
+      elsif card[1] == 'Ace' && summary >= 11
+        summary += card[2][0]
+      else
+        summary += card[2]
+      end
+    end
+    summary
+  end
+
   private
 
   def generate_deck
