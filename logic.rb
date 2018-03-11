@@ -4,18 +4,17 @@ class Logic
   attr_accessor :current_turn
 
   def initialize
-    @player = ''
+    @player = 0
     @dealer = Dealer.new
-    @deck = Deck.new
+    @deck = 0
     @bank = Bank.new
     @choice = { 1 => :stand, 2 => :take_card, 3 => :face_up }
     @current_turn = 0
   end
 
   def start
-    puts 'Hello! What is your name?'
-    name = gets.chomp.to_s
-    @player = Player.new(name)
+    get_player_name if @player == 0
+    @deck = Deck.new
     @player.cards = @deck.get_cards
     @dealer.cards = @deck.get_cards
     player_cards
@@ -24,6 +23,12 @@ class Logic
     @bank.dealer_bank -= 10
     @bank.game_bank += 20
     player_turn
+  end
+
+  def get_player_name
+    puts 'Hello! What is your name?'
+    name = gets.chomp.to_s
+    @player = Player.new(name)
   end
 
   def player_cards
@@ -52,7 +57,7 @@ class Logic
   def dealer_turn
     @current_turn = 0
     if summary(@dealer) >= 17 || full?(@dealer)
-      puts "Dealer stand"
+      puts "Dealer stand. Your turn."
       player_turn
     elsif summary(@dealer) < 17
       take_card
@@ -72,7 +77,7 @@ class Logic
 
   def take_card
     if @current_turn == 1 && full?(@player)
-      puts "#{@player.name} you are full. Choose again."
+      puts 'You are full. Choose again.'
       player_turn
     elsif @current_turn == 1
       @player.cards << @deck.add_card
@@ -89,15 +94,32 @@ class Logic
 
   def face_up
     player_cards
-    dealer_cards(1)
+    dealer_cards(stopgame = 1)
     if summary(@player) > 21
       puts "Dealer WIN!"
+      @bank.dealer_bank += 20
+    elsif summary(@dealer) > 21 && summary(@player) <= 21
+      puts "Player #{@player.name} WIN!"
+      @bank.player_bank += 20
     elsif summary(@player) > summary(@dealer)
       puts "Player #{@player.name} WIN!"
+      @bank.player_bank += 20
     elsif summary(@player) == summary(@dealer)
       puts "DRAW!"
+      @bank.player_bank += 10
+      @bank.dealer_bank += 10
     else
       puts "Dealer WIN!"
+      @bank.dealer_bank += 20
+    end
+    @bank.game_bank = 0
+    puts "#{@player.name}! Your bank is $#{@bank.player_bank}"
+    puts 'Do you want to play again? 1 - Yes, 2 - No.'
+    input = gets.chomp.to_i
+    if input == 1
+      start
+    else
+      exit
     end
   end
 
