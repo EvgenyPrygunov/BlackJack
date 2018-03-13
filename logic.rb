@@ -1,53 +1,52 @@
-require_relative 'player_module'
-require_relative 'dealer_module'
 require_relative 'win_check_module'
 
 class Logic
-  include PlayerModule
-  include DealerModule
   include WinCheckModule
 
-  attr_accessor :current_turn
+  attr_accessor :bank_deck, :bank, :player, :dealer
 
   def initialize
-    @player = ''
-    @dealer = Dealer.new
-    @deck = 0
+    @player ||= player_check
+    @dealer = Dealer.new(self)
+    @bank_deck = 0
     @bank = Bank.new
-    @choice = { 1 => :stand, 2 => :take_card_player, 3 => :face_up }
-    @current_turn = 0
+    @int = Interface.new
   end
 
   def start
-    player_name if @player == ''
-    @deck = Deck.new
-    @player.cards = @deck.get_cards
-    @dealer.cards = @deck.get_cards
-    player_cards
-    dealer_cards
-    @bank.player_bank -= 10
-    @bank.dealer_bank -= 10
-    @bank.game_bank += 20
-    player_turn
+    @bank_deck = Deck.new
+    @bank_deck.new_deck
+    @player.make_deck
+    @dealer.make_deck
+    @player.deck.get_cards(@bank_deck)
+    @dealer.deck.get_cards(@bank_deck)
+    puts @player.deck
+    puts @dealer.deck
+    puts "Player summary #{@player.deck.sum}"
+    @dealer.deck.hide
+    @bank.start_game
+    gameplay
   end
 
-  def stand
-    end_game_check
-    if @current_turn == 1
-      dealer_turn
-    else
-      player_turn
+  def gameplay
+    @player.turn
+    @dealer.turn
+    @player.turn unless @player.deck.full?
+    @dealer.face_up
+  end
+
+  def dealer_turn
+    if @dealer.deck.sum >= 17 || @dealer.deck.full?
+      puts 'Dealer stand. Your turn.'
+    elsif @dealer.deck.sum < 17
+      @dealer.deck.add_card(@bank_deck)
     end
   end
 
-  def face_up
-    player_cards
-    dealer_cards_endgame
-    dealer_win_check || player_win_check || draw_check
-    @bank.game_bank = 0
-    puts "Your bank is $#{@bank.player_bank}"
-    bank_check
-    game_finish
+  def player_check
+    puts 'Hello! What is your name?'
+    name = gets.chomp.to_s
+    @player = Player.new(self, name)
   end
 
   def new_game
@@ -62,6 +61,10 @@ class Logic
     end
   end
 
+  def win_check
+    dealer_win_check || player_win_check || draw_check
+  end
+
   def game_finish
     puts 'Do you want to play next round? 1 - Yes, 2 - No.'
     input = gets.chomp.to_i
@@ -70,10 +73,6 @@ class Logic
     else
       exit
     end
-  end
-
-  def end_game_check
-    face_up if @deck.full?(@player) && @deck.full?(@dealer)
   end
 
   def bank_check
