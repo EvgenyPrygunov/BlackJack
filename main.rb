@@ -9,3 +9,4 @@ require_relative 'interface'
 game = Logic.new
 
 game.start
+

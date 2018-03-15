@@ -1,4 +1,4 @@
-module WinCheckModule
+module WinModule
   def player_win_check
     if @player.deck.sum > 21
       puts 'Dealer WIN!'
