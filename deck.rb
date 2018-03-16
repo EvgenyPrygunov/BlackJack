@@ -22,12 +22,12 @@ class Deck
     @cards.each { puts '*' }
   end
 
-  def get_cards(bank_deck)
-    @cards = bank_deck.cards.slice!(0, 2)
+  def get_cards(game_deck)
+    @cards = game_deck.cards.slice!(0, 2)
   end
 
-  def add_card(bank_deck)
-    @cards << bank_deck.cards.slice!(1)
+  def add_card(game_deck)
+    @cards << game_deck.cards.slice!(1)
   end
 
   def remove_cards

@@ -5,21 +5,23 @@ class Logic
   include WinModule
   include CheckModule
 
-  attr_accessor :bank, :player, :dealer
+  attr_accessor :bank, :player, :dealer, :game_deck
 
   def initialize
     @int = Interface.new
     @player ||= player_check
     @dealer = Dealer.new(Deck.new)
-    @bank = Bank.new(Deck.new)
+    @bank = Bank.new
+    @game_deck = 0
     @choice = { 1 => :stand, 2 => :take_card, 3 => :face_up }
     @choice_check = []
   end
 
   def start
-    @bank.deck.new_deck
-    @player.deck.get_cards(@bank.deck)
-    @dealer.deck.get_cards(@bank.deck)
+    @game_deck = Deck.new
+    @game_deck.new_deck
+    @player.deck.get_cards(@game_deck)
+    @dealer.deck.get_cards(@game_deck)
     @int.player_sum(@player)
     @dealer.deck.hide
     @bank.start_game
@@ -51,7 +53,7 @@ class Logic
 
   def take_card(person = @player)
     auto_face_up_check
-    person.take_card(@bank.deck) until person.deck.full?
+    person.take_card(@game_deck) until person.deck.full?
     if person == @player
       @choice_check << 'take card'
       @int.player_sum(@player)
@@ -90,7 +92,7 @@ class Logic
     input = @int.ask_for_number('Do you want to start new game? 1-Yes, 2-No.')
     if input == 1
       @dealer = Dealer.new(Deck.new)
-      @bank = Bank.new(Deck.new)
+      @bank = Bank.new
       start
     else
       exit

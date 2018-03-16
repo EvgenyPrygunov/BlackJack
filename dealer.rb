@@ -5,7 +5,7 @@ class Dealer
     @deck = deck
   end
 
-  def take_card(bank_deck)
-    @deck.add_card(bank_deck)
+  def take_card(game_deck)
+    @deck.add_card(game_deck)
   end
 end
