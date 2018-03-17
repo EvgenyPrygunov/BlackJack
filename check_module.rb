@@ -1,11 +1,11 @@
 module CheckModule
   def auto_face_up_check
-    face_up if @player.deck.full? && @dealer.deck.full?
+    face_up if @player.hand.full? && @dealer.hand.full?
   end
 
   def player_check
     name = @int.ask_for_string('Hello! What is your name?')
-    @player = Player.new(Deck.new, name)
+    @player = Player.new(name)
   end
 
   def bank_check

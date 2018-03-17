@@ -10,7 +10,7 @@ class Logic
   def initialize
     @int = Interface.new
     @player ||= player_check
-    @dealer = Dealer.new(Deck.new)
+    @dealer = Dealer.new
     @bank = Bank.new
     @game_deck = 0
     @choice = { 1 => :stand, 2 => :take_card, 3 => :face_up }
@@ -20,10 +20,10 @@ class Logic
   def start
     @game_deck = Deck.new
     @game_deck.new_deck
-    @player.deck.get_cards(@game_deck)
-    @dealer.deck.get_cards(@game_deck)
+    @player.hand.cards = @game_deck.give_start_cards
+    @dealer.hand.cards = @game_deck.give_start_cards
     @int.player_sum(@player)
-    @dealer.deck.hide
+    @dealer.hand.hide
     @bank.start_game
     player_turn
     dealer_turn
@@ -43,7 +43,7 @@ class Logic
   end
 
   def dealer_turn
-    if @dealer.deck.sum >= 17 || @dealer.deck.full?
+    if @dealer.hand.sum >= 17 || @dealer.hand.full?
       puts 'Dealer stand. Your turn.'
       stand(@dealer)
     else
@@ -53,7 +53,7 @@ class Logic
 
   def take_card(person = @player)
     auto_face_up_check
-    person.take_card(@game_deck) until person.deck.full?
+    person.hand.cards << @game_deck.give_card until person.hand.full?
     if person == @player
       @choice_check << 'take card'
       @int.player_sum(@player)
@@ -77,8 +77,8 @@ class Logic
     win_check
     @bank.game_bank = 0
     @int.bank_info(@bank.player_bank)
-    @player.deck.remove_cards
-    @dealer.deck.remove_cards
+    @player.hand.remove_cards
+    @dealer.hand.remove_cards
     @choice_check = []
     bank_check
     game_finish
@@ -91,7 +91,7 @@ class Logic
   def new_game
     input = @int.ask_for_number('Do you want to start new game? 1-Yes, 2-No.')
     if input == 1
-      @dealer = Dealer.new(Deck.new)
+      @dealer = Dealer.new
       @bank = Bank.new
       start
     else

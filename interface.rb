@@ -10,10 +10,10 @@ class Interface
   end
 
   def round_info(player, dealer)
-    puts player.deck
-    puts "Player summary #{player.deck.sum}"
-    puts dealer.deck
-    puts "Dealer summary #{dealer.deck.sum}"
+    puts player.hand
+    puts "Player summary #{player.hand.sum}"
+    puts dealer.hand
+    puts "Dealer summary #{dealer.hand.sum}"
   end
 
   def bank_info(player_bank)
@@ -21,7 +21,7 @@ class Interface
   end
 
   def player_sum(player)
-    puts player.deck
-    puts "Player summary: #{player.deck.sum}"
+    puts player.hand
+    puts "Player summary: #{player.hand.sum}"
   end
 end

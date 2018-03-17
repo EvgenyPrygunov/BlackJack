@@ -1,11 +1,7 @@
 class Dealer
-  attr_accessor :deck
+  attr_accessor :hand
 
-  def initialize(deck)
-    @deck = deck
-  end
-
-  def take_card(game_deck)
-    @deck.add_card(game_deck)
+  def initialize
+    @hand = Hand.new
   end
 end

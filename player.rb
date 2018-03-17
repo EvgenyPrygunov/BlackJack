@@ -1,8 +1,8 @@
 class Player < Dealer
-  attr_accessor :name, :deck
+  attr_accessor :name, :hand
 
-  def initialize(deck, name = 0)
-    super(deck)
+  def initialize(name)
+    @hand = Hand.new
     @name = name
   end
 end
